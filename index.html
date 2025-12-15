@@ -44,6 +44,16 @@
             width: 280px;
             height: 280px;
             margin: 0 auto 40px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        
+        .ball-container:hover {
+            transform: scale(1.02);
+        }
+        
+        .ball-container:active {
+            transform: scale(0.98);
         }
         
         .eight-ball {
@@ -111,6 +121,18 @@
             animation: fadeIn 0.5s ease-in;
         }
         
+        .instruction {
+            color: #00ff00;
+            font-size: 11px;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
         .question-text {
             margin-top: 20px;
             font-size: 1rem;
@@ -118,26 +140,16 @@
             max-width: 500px;
             margin-left: auto;
             margin-right: auto;
-            animation: typewriter 1s steps(40) 0.5s both;
-            overflow: hidden;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            min-height: 60px;
+        }
+        
+        .question-text.show {
+            animation: fadeIn 0.8s ease-in;
         }
         
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
-        }
-        
-        @keyframes typewriter {
-            from { 
-                max-height: 0;
-                opacity: 0;
-            }
-            to { 
-                max-height: 500px;
-                opacity: 1;
-            }
         }
         
         button {
@@ -162,6 +174,16 @@
             transform: translateY(2px);
         }
         
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        button:disabled:hover {
+            background: transparent;
+            color: #2a2a2a;
+        }
+        
         .restart {
             margin-top: 20px;
             padding: 8px 24px;
@@ -172,6 +194,12 @@
             margin-top: 60px;
             font-size: 0.85rem;
             opacity: 0.6;
+        }
+        
+        .completion-message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-top: 20px;
         }
         
         @media (max-width: 600px) {
@@ -212,17 +240,17 @@
     <div class="container">
         <h1>36 QUESTIONS TO FALL IN LOVE</h1>
         
-        <div class="ball-container">
+        <div class="ball-container" id="ballContainer" onclick="revealQuestion()">
             <div class="eight-ball">
                 <div class="window">
-                    <div class="question-number" id="questionNumber">Q1</div>
+                    <div id="windowContent" class="instruction">CLICK<br>TO<br>REVEAL</div>
                 </div>
             </div>
         </div>
         
         <div class="question-text" id="questionText"></div>
         
-        <button id="nextBtn" onclick="nextQuestion()">NEXT QUESTION</button>
+        <button id="nextBtn" onclick="nextQuestion()" disabled>NEXT QUESTION</button>
         <button class="restart" id="restartBtn" onclick="restart()" style="display:none;">START OVER</button>
         
         <div class="footer">
@@ -235,7 +263,7 @@
             "Given the choice of anyone in the world, whom would you want as a dinner guest?",
             "Would you like to be famous? In what way?",
             "Before making a telephone call, do you ever rehearse what you are going to say? Why?",
-            "What would constitute a "perfect" day for you?",
+            "What would constitute a perfect day for you?",
             "When did you last sing to yourself? To someone else?",
             "If you were able to live to the age of 90 and retain either the mind or body of a 30-year-old for the last 60 years of your life, which would you want?",
             "Do you have a secret hunch about how you will die?",
@@ -245,11 +273,100 @@
             "Take four minutes and tell your partner your life story in as much detail as possible.",
             "If you could wake up tomorrow having gained any one quality or ability, what would it be?",
             "If a crystal ball could tell you the truth about yourself, your life, the future or anything else, what would you want to know?",
-            "Is there something that you've dreamed of doing for a long time? Why haven't you done it?",
+            "Is there something that you have dreamed of doing for a long time? Why have you not done it?",
             "What is the greatest accomplishment of your life?",
             "What do you value most in a friendship?",
             "What is your most treasured memory?",
             "What is your most terrible memory?",
             "If you knew that in one year you would die suddenly, would you change anything about the way you are now living? Why?",
             "What does friendship mean to you?",
-            "What roles do love and affection play in your life?",
+            "What roles do love and affection play in your life?"
+            // ADD YOUR REMAINING QUESTIONS HERE
+            // Remember to add a comma after each question except the last one
+        ];
+
+        let currentQuestion = 0;
+        let questionRevealed = false;
+
+        function revealQuestion() {
+            if (questionRevealed || currentQuestion >= questions.length) {
+                return;
+            }
+
+            questionRevealed = true;
+            
+            // Update the 8-ball window to show question number
+            const windowContent = document.getElementById('windowContent');
+            windowContent.className = 'question-number';
+            windowContent.textContent = `Q${currentQuestion + 1}`;
+            
+            // Show the question text
+            const questionText = document.getElementById('questionText');
+            questionText.textContent = questions[currentQuestion];
+            questionText.classList.add('show');
+            
+            // Enable the next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            questionRevealed = false;
+            
+            // Clear question text
+            const questionText = document.getElementById('questionText');
+            questionText.textContent = '';
+            questionText.classList.remove('show');
+            
+            // Disable next button
+            document.getElementById('nextBtn').disabled = true;
+            
+            // Check if we've finished all questions
+            if (currentQuestion >= questions.length) {
+                showCompletion();
+                return;
+            }
+            
+            // Reset 8-ball window to "CLICK TO REVEAL"
+            const windowContent = document.getElementById('windowContent');
+            windowContent.className = 'instruction';
+            windowContent.innerHTML = 'CLICK<br>TO<br>REVEAL';
+        }
+
+        function showCompletion() {
+            // Hide the ball
+            document.getElementById('ballContainer').style.display = 'none';
+            
+            // Show completion message
+            const questionText = document.getElementById('questionText');
+            questionText.className = 'question-text completion-message show';
+            questionText.textContent = 'You have completed all 36 questions. Thank you for sharing.';
+            
+            // Hide next button, show restart
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            questionRevealed = false;
+            
+            // Reset display
+            document.getElementById('ballContainer').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('restartBtn').style.display = 'none';
+            
+            // Reset window content
+            const windowContent = document.getElementById('windowContent');
+            windowContent.className = 'instruction';
+            windowContent.innerHTML = 'CLICK<br>TO<br>REVEAL';
+            
+            // Clear question text
+            const questionText = document.getElementById('questionText');
+            questionText.textContent = '';
+            questionText.className = 'question-text';
+        }
+    </script>
+</body>
+</html>
