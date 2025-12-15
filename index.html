@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36 Questions to Fall in Love</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            background: #f5f5dc;
+            color: #2a2a2a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+        
+        .ball-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 40px;
+        }
+        
+        .eight-ball {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 
+                inset -20px -20px 40px rgba(0,0,0,0.5),
+                inset 20px 20px 40px rgba(255,255,255,0.1),
+                0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .eight-ball::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .eight-ball::after {
+            content: '8';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        
+        .window {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 140px;
+            background: #000033;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: 
+                inset 0 0 20px rgba(0,0,100,0.5),
+                0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .question-number {
+            color: #00ff00;
+            font-size: 14px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .question-text {
+            margin-top: 20px;
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: typewriter 1s steps(40) 0.5s both;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes typewriter {
+            from { 
+                max-height: 0;
+                opacity: 0;
+            }
+            to { 
+                max-height: 500px;
+                opacity: 1;
+            }
+        }
+        
+        button {
+            margin-top: 40px;
+            padding: 12px 40px;
+            background: transparent;
+            border: 2px solid #2a2a2a;
+            color: #2a2a2a;
+            font-family: 'Courier Prime', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            background: #2a2a2a;
+            color: #f5f5dc;
+        }
+        
+        button:active {
+            transform: translateY(2px);
+        }
+        
+        .restart {
+            margin-top: 20px;
+            padding: 8px 24px;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 600px) {
+            .ball-container {
+                width: 240px;
+                height: 240px;
+            }
+            
+            .eight-ball::before,
+            .eight-ball::after {
+                top: 30px;
+                left: 30px;
+                width: 80px;
+                height: 80px;
+            }
+            
+            .eight-ball::after {
+                font-size: 38px;
+            }
+            
+            .window {
+                width: 120px;
+                height: 120px;
+                bottom: 40px;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            .question-text {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>36 QUESTIONS TO FALL IN LOVE</h1>
+        
+        <div class="ball-container">
+            <div class="eight-ball">
+                <div class="window">
+                    <div class="question-number" id="questionNumber">Q1</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-text" id="questionText"></div>
+        
+        <button id="nextBtn" onclick="nextQuestion()">NEXT QUESTION</button>
+        <button class="restart" id="restartBtn" onclick="restart()" style="display:none;">START OVER</button>
+        
+        <div class="footer">
+            Based on the study by Dr. Arthur Aron
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "Given the choice of anyone in the world, whom would you want as a dinner guest?",
+            "Would you like to be famous? In what way?",
+            "Before making a telephone call, do you ever rehearse what you are going to say? Why?",
+            "What would constitute a "perfect" day for you?",
+            "When did you last sing to yourself? To someone else?",
+            "If you were able to live to the age of 90 and retain either the mind or body of a 30-year-old for the last 60 years of your life, which would you want?",
+            "Do you have a secret hunch about how you will die?",
+            "Name three things you and your partner appear to have in common.",
+            "For what in your life do you feel most grateful?",
+            "If you could change anything about the way you were raised, what would it be?",
+            "Take four minutes and tell your partner your life story in as much detail as possible.",
+            "If you could wake up tomorrow having gained any one quality or ability, what would it be?",
+            "If a crystal ball could tell you the truth about yourself, your life, the future or anything else, what would you want to know?",
+            "Is there something that you've dreamed of doing for a long time? Why haven't you done it?",
+            "What is the greatest accomplishment of your life?",
+            "What do you value most in a friendship?",
+            "What is your most treasured memory?",
+            "What is your most terrible memory?",
+            "If you knew that in one year you would die suddenly, would you change anything about the way you are now living? Why?",
+            "What does friendship mean to you?",
+            "What roles do love and affection play in your life?",
